@@ -1,0 +1,789 @@
+<title>কোডপট</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@400;600;700&family=Baloo+Da+2:wght@400;600;700&family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;700&family=Noto+Serif+Bengali:wght@400;700&family=Tiro+Bangla&family=JetBrains+Mono:wght@400;600&family=Fira+Code:wght@400;600&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a two-part workbench — the four fields on the left, the poster on a "light table" on the right with size and theme right beside it. */
+:root{
+  --bg:#EEF1EF; --panel:#FFFFFF; --sunk:#F5F7F6; --ink:#16211E; --muted:#5A6A65; --line:#D8E0DC;
+  --accent:#0E7A60; --accent-ink:#FFFFFF; --accent-soft:rgba(14,122,96,.10); --table:#DFE5E2; --danger:#B3261E;
+  --f-ui:"Hind Siliguri","Noto Sans Bengali",system-ui,sans-serif;
+  --f-display:"Anek Bangla","Hind Siliguri",system-ui,sans-serif;
+  --f-code:"JetBrains Mono","Fira Code",ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1412; --panel:#151D1A; --sunk:#111816; --ink:#E5EEEA; --muted:#93A49E; --line:#263330;
+  --accent:#3FCCA6; --accent-ink:#04231B; --accent-soft:rgba(63,204,166,.14); --table:#0A0F0D; --danger:#FF8A80; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1412; --panel:#151D1A; --sunk:#111816; --ink:#E5EEEA; --muted:#93A49E; --line:#263330;
+  --accent:#3FCCA6; --accent-ink:#04231B; --accent-soft:rgba(63,204,166,.14); --table:#0A0F0D; --danger:#FF8A80; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-ui);font-size:15px;line-height:1.5}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 18px;padding-block:12px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  background:var(--panel);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:baseline;gap:10px;min-width:0}
+.logo{font-family:var(--f-display);font-weight:700;font-size:24px;letter-spacing:-.01em}
+.logo b{color:var(--accent);font-family:var(--f-code);font-size:17px;font-weight:600;margin-right:4px}
+.sub{color:var(--muted);font-size:13px}
+.actions{display:flex;flex-wrap:wrap;gap:8px}
+.btn{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:8px 16px;font-weight:500;white-space:nowrap}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600;padding-inline:22px}
+.btn.primary:hover{filter:brightness(1.06)}
+.btn[disabled]{opacity:.55;cursor:progress}
+
+.work{display:grid;grid-template-columns:minmax(320px,420px) minmax(0,1fr);grid-template-areas:"panel stage";min-height:calc(100vh - 66px)}
+.panel{grid-area:panel;min-width:0;background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;gap:16px;
+  padding-block:18px 32px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:16px}
+.stage{grid-area:stage;min-width:0;background:var(--table);display:flex;flex-direction:column;align-items:center;gap:16px;padding-block:20px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+.seg{display:inline-flex;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:3px;gap:2px;flex-wrap:wrap;justify-content:center}
+.seg button{border:none;background:none;border-radius:999px;padding:5px 14px;font-size:14px;color:var(--muted);font-weight:500}
+.seg button small{font-family:var(--f-code);font-size:11px;margin-left:5px;opacity:.8}
+.seg button[aria-checked="true"]{background:var(--accent);color:var(--accent-ink)}
+.canvasWrap{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;width:100%}
+#poster{display:block;max-width:100%;max-height:calc(100vh - 220px);width:auto;height:auto;border-radius:6px;box-shadow:0 12px 40px rgba(0,0,0,.22);background:#000}
+.dots{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center}
+.dot{width:34px;height:34px;border-radius:50%;border:2px solid var(--panel);box-shadow:0 0 0 1px var(--line);position:relative;padding:0}
+.dot::after{content:"";position:absolute;right:-2px;bottom:-2px;width:12px;height:12px;border-radius:50%;background:var(--a);border:2px solid var(--panel)}
+.dot[aria-checked="true"]{box-shadow:0 0 0 3px var(--accent)}
+.dots .lbl{font-size:13px;color:var(--muted);margin-right:2px}
+
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field>label,.lbl{font-size:13px;font-weight:600;color:var(--muted)}
+.hint{font-size:12px;color:var(--muted);font-weight:400}
+.field input[type=text],.field select,.field textarea{width:100%;border:1px solid var(--line);background:var(--sunk);border-radius:8px;padding:8px 10px}
+.field textarea{resize:vertical;min-height:80px}
+.field textarea.code{font-family:var(--f-code);font-size:13px;line-height:1.55;min-height:240px;white-space:pre;overflow:auto;tab-size:2}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px var(--accent-soft)}
+code.k{font-family:var(--f-code);font-size:12px;background:var(--accent-soft);color:var(--accent);padding:1px 5px;border-radius:4px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row>.field{flex:1 1 140px}
+.warnline{font-size:13px;color:var(--muted);background:var(--sunk);border:1px solid var(--line);border-radius:8px;padding:8px 10px;margin:0}
+
+details{border:1px solid var(--line);border-radius:10px;background:var(--sunk)}
+details>summary{cursor:pointer;padding:10px 14px;font-weight:600;list-style:none;display:flex;justify-content:space-between;align-items:center}
+details>summary::-webkit-details-marker{display:none}
+details>summary::after{content:"+";color:var(--muted);font-size:18px;line-height:1}
+details[open]>summary::after{content:"–"}
+details .inner{padding:4px 14px 14px;display:flex;flex-direction:column;gap:14px}
+.toggles{display:flex;flex-wrap:wrap;gap:8px 18px}
+.tg{display:flex;align-items:center;gap:8px;font-size:14px}
+.tg input{accent-color:var(--accent);width:16px;height:16px}
+.accentRow{display:flex;align-items:center;gap:10px}
+.accentRow input[type=color]{width:44px;height:32px;border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:2px}
+input[type=range]{accent-color:var(--accent);width:100%}
+.ib{border:1px solid var(--line);background:var(--panel);border-radius:7px;padding:4px 10px;font-size:13px}
+.ib:hover{border-color:var(--accent)}
+.ib.warn{color:var(--danger)}
+.ib.warn.arm{background:var(--danger);color:#fff;border-color:var(--danger)}
+
+.lib{display:flex;flex-direction:column;gap:8px}
+.libitem{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--panel)}
+.libitem[aria-current="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.libitem .t{flex:1;min-width:0}
+.libitem .t b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;font-size:14px}
+.libitem .t small{color:var(--muted);font-size:12px}
+.note{font-size:13px;color:var(--muted);margin:0}
+
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:14px;z-index:50;max-width:calc(100% - 32px);box-shadow:0 8px 30px rgba(0,0,0,.25)}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:40;display:flex;align-items:center;justify-content:center;
+  padding:calc(16px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(16px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.modal .box{background:var(--panel);border-radius:14px;max-width:560px;width:100%;max-height:100%;overflow:auto;padding:20px;display:flex;flex-direction:column;gap:12px}
+.modal img{width:100%;border-radius:6px;border:1px solid var(--line)}
+.modal h3{margin:0;font-family:var(--f-display)}
+
+@media (max-width:860px){
+  .work{grid-template-columns:minmax(0,1fr);grid-template-areas:"stage" "panel"}
+  .panel{border-right:none;border-top:1px solid var(--line)}
+  #poster{max-height:64vh}
+}
+</style>
+
+<header class="bar">
+  <div class="brand"><span class="logo"><b>&lt;/&gt;</b>কোডপট</span><span class="sub">msilabs পোস্টের পোস্টার</span></div>
+  <div class="actions">
+    <button class="btn" id="btnCopy" type="button">কপি</button>
+    <button class="btn primary" id="btnSave" type="button">ছবি সেভ করুন</button>
+  </div>
+</header>
+
+<main class="work">
+  <section class="stage" aria-label="প্রিভিউ">
+    <div class="seg" id="sizes" role="radiogroup" aria-label="ছবির মাপ"></div>
+    <div class="canvasWrap"><canvas id="poster" width="1080" height="1350" aria-label="পোস্টারের প্রিভিউ"></canvas></div>
+    <div class="dots" id="themes" role="radiogroup" aria-label="থিম"><span class="lbl">থিম</span></div>
+  </section>
+
+  <aside class="panel">
+    <div class="field">
+      <label for="fTitle">শিরোনাম</label>
+      <input type="text" id="fTitle">
+    </div>
+    <div class="field">
+      <label for="fBody">ব্যাখ্যা <span class="hint">· <code class="k">`কোড`</code> আর <code class="k">**বোল্ড**</code> চলবে</span></label>
+      <textarea id="fBody" rows="3"></textarea>
+    </div>
+    <div class="field">
+      <label for="fCode">কোড <span class="hint">· খালি রাখলে শুধু লেখার পোস্টার হবে</span></label>
+      <textarea id="fCode" class="code" spellcheck="false" autocapitalize="off" autocomplete="off"></textarea>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label for="fLang">ভাষা</label>
+        <select id="fLang"></select>
+      </div>
+      <div class="field">
+        <label for="fTag">ট্যাগ <span class="hint">· ঐচ্ছিক</span></label>
+        <input type="text" id="fTag" placeholder="যেমন JavaScript টিপস">
+      </div>
+    </div>
+    <p class="warnline" id="codeNote" hidden></p>
+
+    <details id="more">
+      <summary>আরও সেটিং</summary>
+      <div class="inner">
+        <div class="field">
+          <label for="fFile">ফাইলের নাম <span class="hint">· কোডের জানালার মাথায়</span></label>
+          <input type="text" id="fFile" placeholder="যেমন app.js">
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="dFontBn">বাংলা ফন্ট</label>
+            <select id="dFontBn"></select>
+          </div>
+          <div class="field">
+            <label for="dFontCode">কোডের ফন্ট</label>
+            <select id="dFontCode"></select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="dCodeSize">কোডের আকার: <span id="dCodeSizeVal"></span></label>
+          <input type="range" id="dCodeSize" min="0" max="40" step="1">
+          <span class="hint">০ মানে নিজে থেকে মাপমতো হবে</span>
+        </div>
+        <div class="field">
+          <span class="lbl">অ্যাকসেন্ট রং</span>
+          <div class="accentRow">
+            <input type="color" id="dAccent" aria-label="অ্যাকসেন্ট রং">
+            <button class="ib" id="dAccentReset" type="button">থিমের রং</button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="dHandle">পেজের নাম</label>
+            <input type="text" id="dHandle">
+          </div>
+          <div class="field">
+            <label for="dFooter">নিচের লেখা</label>
+            <input type="text" id="dFooter">
+          </div>
+        </div>
+        <div class="toggles">
+          <label class="tg"><input type="checkbox" id="tLine">লাইন নম্বর</label>
+          <label class="tg"><input type="checkbox" id="tChrome">জানালার বোতাম</label>
+        </div>
+      </div>
+    </details>
+
+    <details id="libBox">
+      <summary>আগের পোস্টার</summary>
+      <div class="inner">
+        <div class="row">
+          <button class="btn primary" id="libNew" type="button">+ নতুন পোস্টার</button>
+        </div>
+        <p class="note">প্রতিটা পোস্টার লেখার সাথে সাথে এই ব্রাউজারে জমা থাকে। নতুন পোস্টারে ডিজাইন আগেরটার মতোই থাকে।</p>
+        <div class="lib" id="libList"></div>
+      </div>
+    </details>
+  </aside>
+</main>
+
+<div class="toast" id="toast" hidden></div>
+<div class="modal" id="modal" hidden>
+  <div class="box">
+    <h3>ছবি সেভ করুন</h3>
+    <p class="note">এখানে সরাসরি ডাউনলোড চালু নেই। ছবিতে রাইট-ক্লিক (ফোনে লম্বা চাপ) দিয়ে সেভ করুন।</p>
+    <img id="modalImg" alt="পোস্টারের ছবি">
+    <div><button class="btn" id="modalClose" type="button">বন্ধ করুন</button></div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/dart.min.js"></script>
+<script>
+(() => {
+"use strict";
+
+/* ---------- constants ---------- */
+const SIZES = {
+  square:   {w:1080,h:1080,label:"বর্গ",ratio:"১:১"},
+  portrait: {w:1080,h:1350,label:"পোর্ট্রেট",ratio:"৪:৫"},
+  wide:     {w:1200,h:630, label:"চওড়া",ratio:"১.৯:১"}
+};
+const BN_FONTS = {
+  "Hind Siliguri":     {title:700,bold:600,body:400,label:"হিন্দ শিলিগুড়ি"},
+  "Anek Bangla":       {title:700,bold:600,body:400,label:"অনেক বাংলা"},
+  "Baloo Da 2":        {title:700,bold:600,body:400,label:"বালু দা"},
+  "Noto Sans Bengali": {title:700,bold:700,body:400,label:"নোটো সান্স বাংলা"},
+  "Noto Serif Bengali":{title:700,bold:700,body:400,label:"নোটো সেরিফ বাংলা"},
+  "Tiro Bangla":       {title:400,bold:400,body:400,label:"তিরো বাংলা"}
+};
+const CODE_FONTS = ["JetBrains Mono","Fira Code","IBM Plex Mono"];
+const LANGS = [
+  ["auto","নিজে বুঝে নিক"],["javascript","JavaScript"],["typescript","TypeScript"],["python","Python"],
+  ["java","Java"],["cpp","C++"],["c","C"],["csharp","C#"],["go","Go"],["rust","Rust"],["php","PHP"],
+  ["kotlin","Kotlin"],["swift","Swift"],["dart","Dart"],["ruby","Ruby"],["sql","SQL"],["bash","Bash / Shell"],
+  ["xml","HTML / XML"],["css","CSS"],["scss","SCSS"],["json","JSON"],["yaml","YAML"],["markdown","Markdown"],["plaintext","সাধারণ লেখা"]
+];
+const LANG_LABEL = Object.fromEntries(LANGS);
+const THEMES = {
+  night:{name:"রাত",bg1:"#0B1220",bg2:"#1B2643",dot:"#FFFFFF",fg:"#F2F5FB",muted:"#9AA6BF",accent:"#FFB547",onAccent:"#1A1206",
+    card:"#090F1D",cardLine:"rgba(255,255,255,0.09)",shadow:"rgba(0,0,0,0.5)",gutter:"#3D4863",
+    syn:{fg:"#E3E9F4",kw:"#FF7AB6",str:"#A6E07A",num:"#FFB547",com:"#6A7794",fn:"#7CC7FF",type:"#C9A2FF",bi:"#5EE0D0",attr:"#FFD58A",tag:"#FF7AB6",meta:"#8FA0BF",punc:"#9AA6BF"}},
+  emerald:{name:"পান্না",bg1:"#05261F",bg2:"#0C4D41",dot:"#B8FFF0",fg:"#ECFBF6",muted:"#93C2B5",accent:"#5EEAD4",onAccent:"#032620",
+    card:"#031A16",cardLine:"rgba(94,234,212,0.16)",shadow:"rgba(0,0,0,0.45)",gutter:"#2A5A50",
+    syn:{fg:"#DDF4EE",kw:"#F9A8D4",str:"#BEF264",num:"#FDBA74",com:"#5E8C80",fn:"#7DD3FC",type:"#C4B5FD",bi:"#5EEAD4",attr:"#FDE68A",tag:"#F9A8D4",meta:"#7FA99D",punc:"#93C2B5"}},
+  dawn:{name:"ভোর",bg1:"#EEF3FA",bg2:"#D6E2F4",dot:"#1B2A44",fg:"#0F1A2E",muted:"#4A5873",accent:"#2457D6",onAccent:"#FFFFFF",
+    card:"#FFFFFF",cardLine:"rgba(15,26,46,0.10)",shadow:"rgba(30,50,90,0.20)",gutter:"#B6C0D0",light:true,
+    syn:{fg:"#1F2937",kw:"#C0287A",str:"#15803D",num:"#B45309",com:"#8A94A6",fn:"#1D4ED8",type:"#7C3AED",bi:"#0E7490",attr:"#A16207",tag:"#C0287A",meta:"#64748B",punc:"#475569"}},
+  dusk:{name:"গোধূলি",bg1:"#22101B",bg2:"#4D1B2B",dot:"#FFD9CC",fg:"#FFF1EC",muted:"#D3A7A0",accent:"#FF9466",onAccent:"#2A0E05",
+    card:"#16080F",cardLine:"rgba(255,148,102,0.16)",shadow:"rgba(0,0,0,0.5)",gutter:"#5C3440",
+    syn:{fg:"#F7E4DE",kw:"#FF8FB1",str:"#C8E68C",num:"#FFC27A",com:"#8A6670",fn:"#8FD3FF",type:"#E0B3FF",bi:"#FFB4A2",attr:"#FFD9A0",tag:"#FF8FB1",meta:"#B48C92",punc:"#D3A7A0"}},
+  ink:{name:"কালি",bg1:"#131313",bg2:"#232323",dot:"#FFFFFF",fg:"#FAFAFA",muted:"#A3A3A3",accent:"#FACC15",onAccent:"#141414",
+    card:"#0A0A0A",cardLine:"rgba(255,255,255,0.10)",shadow:"rgba(0,0,0,0.55)",gutter:"#3A3A3A",
+    syn:{fg:"#E5E5E5",kw:"#FACC15",str:"#D4D4D4",num:"#FACC15",com:"#6B6B6B",fn:"#FFFFFF",type:"#FFFFFF",bi:"#E5E5E5",attr:"#BDBDBD",tag:"#FACC15",meta:"#8A8A8A",punc:"#8A8A8A"}}
+};
+
+/* ---------- helpers ---------- */
+const $ = id => document.getElementById(id);
+const bn = n => String(n).replace(/\d/g, d => "০১২৩৪৫৬৭৮৯"[d]);
+const uid = () => Math.random().toString(36).slice(2, 10);
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const seg = (typeof Intl !== "undefined" && Intl.Segmenter) ? new Intl.Segmenter("bn", {granularity:"grapheme"}) : null;
+const graphemes = s => seg ? Array.from(seg.segment(s), x => x.segment) : Array.from(s);
+const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const clone = o => JSON.parse(JSON.stringify(o));
+function rgba(hex, a){
+  const m = /^#?([0-9a-f]{6})$/i.exec(hex || ""); if (!m) return hex;
+  const n = parseInt(m[1], 16); return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`;
+}
+function rr(ctx, x, y, w, h, r){
+  r = Math.min(r, w/2, h/2);
+  ctx.beginPath(); ctx.moveTo(x+r, y); ctx.arcTo(x+w, y, x+w, y+h, r); ctx.arcTo(x+w, y+h, x, y+h, r);
+  ctx.arcTo(x, y+h, x, y, r); ctx.arcTo(x, y, x+w, y, r); ctx.closePath();
+}
+const store = {
+  get(k, d){ try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
+  set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+};
+
+/* ---------- posts ---------- */
+const DESIGN_KEYS = ["size","theme","accent","fontBn","fontCode","codeSize","handle","footer","showLineNo","showChrome"];
+function samplePost(){
+  return {
+    id: uid(), updated: Date.now(),
+    size: "portrait", theme: "night", accent: null, fontBn: "Hind Siliguri", fontCode: "JetBrains Mono",
+    codeSize: 0, handle: "msilabs", footer: "প্রতি সপ্তাহে নতুন কোড টিপস", showLineNo: true, showChrome: true,
+    tag: "JavaScript টিপস", title: "map() নতুন অ্যারে বানায়",
+    body: "প্রতিটা উপাদান বদলে একটা **নতুন অ্যারে** ফেরত দেয়, মূল অ্যারে যেমন ছিল তেমনই থাকে। শুধু কাজ চালাতে চাইলে `forEach()` যথেষ্ট।",
+    code: "const prices = [120, 250, 80];\n\n// ১৫% ভ্যাট যোগ করে নতুন দাম\nconst withVat = prices.map((price) =>\n  Math.round(price * 1.15)\n);\n\nconsole.log(withVat); // [138, 288, 92]\nconsole.log(prices);  // [120, 250, 80]",
+    lang: "javascript", file: "map.js"
+  };
+}
+let library = store.get("kodpot.posters", []);
+let state = library.find(p => p.id === store.get("kodpot.currentPoster", null)) || library[0];
+if (!state) { state = samplePost(); library = [clone(state)]; }
+state = clone(state);
+
+let saveTimer;
+function commit(){
+  state.updated = Date.now();
+  const i = library.findIndex(p => p.id === state.id);
+  if (i >= 0) library[i] = clone(state); else library.unshift(clone(state));
+  library.sort((a, b) => b.updated - a.updated);
+  library = library.slice(0, 80);
+  store.set("kodpot.posters", library);
+  store.set("kodpot.currentPoster", state.id);
+  if ($("libBox").open) renderLib();
+}
+function persist(){ clearTimeout(saveTimer); saveTimer = setTimeout(commit, 500); }
+
+/* ---------- fonts ---------- */
+let fontsKey = "";
+async function ensureFonts(){
+  const key = state.fontBn + "|" + state.fontCode;
+  if (key === fontsKey) return;
+  const f = BN_FONTS[state.fontBn], sample = "বাংলা কোড ক্ষ্ম Abc ১২৩ {}";
+  const reqs = [f.title, f.bold, f.body].map(w => `${w} 40px "${state.fontBn}"`)
+    .concat([`400 40px "${state.fontCode}"`, `600 40px "${state.fontCode}"`]);
+  if (document.fonts && document.fonts.load) await Promise.all(reqs.map(r => document.fonts.load(r, sample).catch(() => null)));
+  fontsKey = key;
+}
+
+/* ---------- text layout ---------- */
+function fontStr(style, size){
+  const f = BN_FONTS[state.fontBn];
+  if (style.code) return `${style.bold ? 600 : 400} ${size}px "${state.fontCode}", "${state.fontBn}", monospace`;
+  const w = style.title ? f.title : style.bold ? f.bold : (style.weight || f.body);
+  return `${w} ${size}px "${state.fontBn}", "Noto Sans Bengali", sans-serif`;
+}
+function parseInline(s){
+  const runs = [], re = /`([^`]+)`|\*\*([^*]+)\*\*/g; let last = 0, m;
+  while ((m = re.exec(s))) {
+    if (m.index > last) runs.push({t: s.slice(last, m.index)});
+    if (m[1] != null) runs.push({t: m[1], code: true}); else runs.push({t: m[2], bold: true});
+    last = re.lastIndex;
+  }
+  if (last < s.length) runs.push({t: s.slice(last)});
+  return runs;
+}
+function layoutRich(ctx, text, size, maxW, base){
+  const lines = [], codeSize = size * 0.86, codePad = size * 0.28;
+  const measure = (t, st) => { ctx.font = fontStr(st, st.code ? codeSize : size); return ctx.measureText(t).width + (st.code ? codePad * 2 : 0); };
+  for (const para of String(text || "").split("\n")) {
+    let cur = [], curW = 0;
+    const push = () => { while (cur.length && cur[cur.length-1].space) curW -= cur.pop().w; lines.push({atoms: cur, w: curW}); cur = []; curW = 0; };
+    for (const run of parseInline(para)) {
+      const st = Object.assign({}, base, {code: !!run.code, bold: !!run.bold || !!base.bold});
+      const pieces = run.code ? [run.t] : run.t.split(/(\s+)/).filter(Boolean);
+      for (const p of pieces) {
+        if (!run.code && /^\s+$/.test(p)) {
+          if (!cur.length) continue;
+          const sw = measure(" ", st); cur.push({t: " ", st, w: sw, space: true}); curW += sw; continue;
+        }
+        const w = measure(p, st);
+        if (curW + w > maxW && cur.length) push();
+        if (w > maxW) {
+          let chunk = "";
+          for (const g of graphemes(p)) {
+            if (measure(chunk + g, st) > maxW && chunk) { cur.push({t: chunk, st, w: measure(chunk, st)}); push(); chunk = g; }
+            else chunk += g;
+          }
+          if (chunk) { const cw = measure(chunk, st); cur.push({t: chunk, st, w: cw}); curW += cw; }
+          continue;
+        }
+        cur.push({t: p, st, w}); curW += w;
+      }
+    }
+    push();
+  }
+  while (lines.length && !lines[lines.length-1].atoms.length) lines.pop();
+  return {lines, size, lh: size * (base.title ? 1.28 : 1.6), codeSize, codePad};
+}
+function fitRich(ctx, text, maxW, maxSize, minSize, maxLines, base, maxH){
+  for (let s = maxSize; s >= minSize; s -= 2) {
+    const L = layoutRich(ctx, text, s, maxW, base);
+    if (L.lines.length <= maxLines && (!maxH || L.lines.length * L.lh <= maxH)) return L;
+  }
+  return layoutRich(ctx, text, minSize, maxW, base);
+}
+function drawRich(ctx, L, x, y, color, strong, accent){
+  ctx.textBaseline = "middle";
+  L.lines.forEach((line, i) => {
+    const cy = y + i * L.lh + L.lh / 2;
+    let cx = x;
+    for (const a of line.atoms) {
+      if (a.st.code) {
+        ctx.font = fontStr(a.st, L.codeSize);
+        ctx.fillStyle = rgba(accent, 0.16);
+        rr(ctx, cx, cy - L.codeSize * 0.78, a.w, L.codeSize * 1.56, L.codeSize * 0.3); ctx.fill();
+        ctx.fillStyle = accent; ctx.fillText(a.t, cx + L.codePad, cy + L.codeSize * 0.04);
+      } else {
+        ctx.font = fontStr(a.st, L.size);
+        ctx.fillStyle = a.st.bold && !a.st.title ? strong : color;
+        ctx.fillText(a.t, cx, cy);
+      }
+      cx += a.w;
+    }
+  });
+}
+const richH = L => L.lines.length * L.lh;
+
+/* ---------- code highlighting ---------- */
+function normalizeCode(code){
+  let lines = String(code || "").replace(/\r\n?/g, "\n").replace(/\t/g, "    ").split("\n");
+  while (lines.length && !lines[0].trim()) lines.shift();
+  while (lines.length && !lines[lines.length-1].trim()) lines.pop();
+  const ind = Math.min(...lines.filter(l => l.trim()).map(l => l.match(/^ */)[0].length));
+  if (isFinite(ind) && ind > 0) lines = lines.map(l => l.slice(ind));
+  return lines.map(l => l.replace(/\s+$/, "")).join("\n");
+}
+function hlLines(code, lang){
+  code = normalizeCode(code);
+  let html, detected = lang;
+  try {
+    if (!window.hljs || lang === "plaintext") html = esc(code);
+    else if (lang === "auto") { const r = hljs.highlightAuto(code); html = r.value; detected = r.language || "plaintext"; }
+    else html = hljs.highlight(code, {language: lang, ignoreIllegals: true}).value;
+  } catch { html = esc(code); }
+  const tpl = document.createElement("template"); tpl.innerHTML = html;
+  const lines = [[]];
+  (function walk(node, scope){
+    for (const c of node.childNodes) {
+      if (c.nodeType === 3) {
+        c.nodeValue.split("\n").forEach((p, k) => { if (k > 0) lines.push([]); if (p) lines[lines.length-1].push({t: p, s: scope}); });
+      } else if (c.nodeType === 1) {
+        const sc = Array.from(c.classList).map(x => x.replace(/^hljs-/, "").replace(/_+$/, "")).join(" ");
+        walk(c, sc || scope);
+      }
+    }
+  })(tpl.content, "");
+  return {lines, detected};
+}
+function tokColor(s, p){
+  if (!s) return p.fg;
+  const [a, b] = s.split(" ");
+  if (a === "comment" || a === "quote") return p.com;
+  if (["string","regexp","char","symbol","template-tag","addition"].includes(a)) return p.str;
+  if (a === "number" || a === "literal") return p.num;
+  if (["keyword","selector-tag","doctag","deletion"].includes(a)) return p.kw;
+  if (a === "built_in") return p.bi;
+  if (a === "type" || a === "class" || (a === "title" && b === "class")) return p.type;
+  if (a === "title" || a === "function" || a === "section") return p.fn;
+  if (["attr","attribute","property","selector-class","selector-id","selector-attr","selector-pseudo","variable","template-variable"].includes(a)) return p.attr;
+  if (a === "tag" || a === "name") return p.tag;
+  if (a === "meta") return p.meta;
+  if (a === "operator" || a === "punctuation") return p.punc;
+  return p.fg;
+}
+const codeFont = (size, bold) => `${bold ? 600 : 400} ${size}px "${state.fontCode}", "${state.fontBn}", monospace`;
+
+function layoutCode(ctx, hl, boxW, boxH, u){
+  const padX = 34*u, padTop = state.showChrome ? 74*u : 34*u, padBot = 34*u, lhR = 1.58;
+  const n = Math.max(1, hl.lines.length);
+  ctx.font = codeFont(100);
+  let maxW100 = 0;
+  for (const line of hl.lines) { let w = 0; for (const t of line) w += ctx.measureText(t.t).width; maxW100 = Math.max(maxW100, w); }
+  const digits100 = state.showLineNo ? ctx.measureText(String(n)).width : 0;
+  const gutGap = state.showLineNo ? 26*u : 0;
+  let size;
+  if (state.codeSize > 0) size = state.codeSize * u * 1.35;
+  else {
+    const sizeW = (boxW - padX*2 - gutGap) * 100 / Math.max(1, maxW100 + digits100);
+    const sizeH = (boxH - padTop - padBot) / (n * lhR);
+    size = clamp(Math.min(32*u, sizeW, sizeH), 17*u, 32*u);
+  }
+  const lh = size * lhR;
+  const gutterW = state.showLineNo ? digits100 * size / 100 + gutGap : 0;
+  const textW = boxW - padX*2 - gutterW;
+  ctx.font = codeFont(size);
+  const indentW = ctx.measureText("  ").width;
+  const vis = [];
+  hl.lines.forEach((line, li) => {
+    let cur = [], x = 0, first = true;
+    const flush = () => { vis.push({toks: cur, num: first ? li + 1 : null}); cur = []; x = indentW; first = false; };
+    for (const t of line) {
+      const w = ctx.measureText(t.t).width;
+      if (x + w <= textW) { cur.push({t: t.t, s: t.s, x}); x += w; continue; }
+      let chunk = "", cx = x;
+      for (const g of graphemes(t.t)) {
+        if (cx + ctx.measureText(chunk + g).width > textW && (chunk || cur.length)) {
+          if (chunk) cur.push({t: chunk, s: t.s, x: cx});
+          flush(); chunk = g.trim() ? g : ""; cx = x;
+        } else chunk += g;
+      }
+      if (chunk) { cur.push({t: chunk, s: t.s, x: cx}); x = cx + ctx.measureText(chunk).width; }
+    }
+    flush();
+  });
+  const fitN = Math.max(1, Math.floor((boxH - padTop - padBot) / lh));
+  let shown = vis, truncated = false;
+  if (vis.length > fitN) { shown = vis.slice(0, fitN - 1).concat([{toks: [{t: "…", s: "comment", x: 0}], num: null}]); truncated = true; }
+  return {vis: shown, size, lh, padX, padTop, padBot, gutterW, h: padTop + shown.length * lh + padBot, truncated, n};
+}
+function drawCodeCard(ctx, C, x, y, w, t, u, label){
+  ctx.save();
+  ctx.shadowColor = t.shadow; ctx.shadowBlur = 50*u; ctx.shadowOffsetY = 18*u;
+  ctx.fillStyle = t.card; rr(ctx, x, y, w, C.h, 26*u); ctx.fill();
+  ctx.restore();
+  ctx.strokeStyle = t.cardLine; ctx.lineWidth = 2*u; rr(ctx, x, y, w, C.h, 26*u); ctx.stroke();
+  ctx.textBaseline = "middle";
+  if (state.showChrome) {
+    ["#FF5F57","#FEBC2E","#28C840"].forEach((c, i) => { ctx.fillStyle = c; ctx.beginPath(); ctx.arc(x + 34*u + i*26*u, y + 36*u, 8*u, 0, Math.PI*2); ctx.fill(); });
+    if (label) {
+      ctx.font = codeFont(20*u); ctx.fillStyle = t.syn.com; ctx.textAlign = "right";
+      ctx.fillText(label, x + w - 32*u, y + 37*u); ctx.textAlign = "left";
+    }
+  }
+  const tx = x + C.padX + C.gutterW;
+  C.vis.forEach((v, i) => {
+    const cy = y + C.padTop + i * C.lh + C.lh / 2;
+    if (state.showLineNo && v.num != null) {
+      ctx.font = codeFont(C.size); ctx.fillStyle = t.gutter; ctx.textAlign = "right";
+      ctx.fillText(String(v.num), tx - 26*u, cy); ctx.textAlign = "left";
+    }
+    for (const tk of v.toks) {
+      ctx.font = codeFont(C.size, tk.s && /^(keyword|title)/.test(tk.s));
+      ctx.fillStyle = tokColor(tk.s, t.syn);
+      ctx.fillText(tk.t, tx + tk.x, cy);
+    }
+  });
+}
+
+/* ---------- poster renderer ---------- */
+let lastCode = null;
+function renderPoster(canvas){
+  const S = SIZES[state.size] || SIZES.portrait, W = S.w, H = S.h;
+  if (canvas.width !== W) canvas.width = W;
+  if (canvas.height !== H) canvas.height = H;
+  const ctx = canvas.getContext("2d");
+  const t = THEMES[state.theme] || THEMES.night, accent = state.accent || t.accent;
+  const wide = W / H > 1.4;
+  const u = Math.min(W / 1080, H * 1.35 / 1080);
+  const P = (wide ? 56 : 76) * u;
+  const bold = BN_FONTS[state.fontBn].bold;
+  ctx.textAlign = "left"; ctx.textBaseline = "middle";
+
+  // background: gradient + dot grid fading from the top-right corner
+  const g = ctx.createLinearGradient(0, 0, W, H); g.addColorStop(0, t.bg1); g.addColorStop(1, t.bg2);
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  const sp = 30*u, R = Math.max(W, H) * 0.75;
+  ctx.fillStyle = t.dot;
+  for (let yy = sp/2; yy < H; yy += sp) for (let xx = sp/2; xx < W; xx += sp) {
+    const a = (1 - Math.hypot(W - xx, yy) / R) * 0.16;
+    if (a <= 0) continue;
+    ctx.globalAlpha = a; ctx.beginPath(); ctx.arc(xx, yy, 1.8*u, 0, Math.PI*2); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+
+  const hasCode = !!normalizeCode(state.code).trim();
+  if (!hasCode) {
+    ctx.font = `600 ${(wide ? 520 : 640)*u}px "${state.fontCode}", monospace`;
+    ctx.fillStyle = rgba(accent, t.light ? 0.08 : 0.07); ctx.textAlign = "right"; ctx.textBaseline = "alphabetic";
+    ctx.fillText("{}", W + 40*u, H - 40*u); ctx.textAlign = "left"; ctx.textBaseline = "middle";
+  }
+
+  // header: brand mark + page name
+  const mk = 54*u;
+  ctx.fillStyle = accent; rr(ctx, P, P, mk, mk, 14*u); ctx.fill();
+  ctx.fillStyle = t.onAccent; ctx.font = codeFont(21*u, true); ctx.textAlign = "center";
+  ctx.fillText("</>", P + mk/2, P + mk/2 + 1*u); ctx.textAlign = "left";
+  ctx.fillStyle = t.fg; ctx.font = fontStr({weight: bold}, 28*u);
+  ctx.fillText(state.handle || "", P + mk + 18*u, P + mk/2 + 1*u);
+
+  // footer
+  if (state.footer) {
+    ctx.font = fontStr({}, 24*u); ctx.fillStyle = t.muted;
+    let f = state.footer; const maxF = W - 2*P;
+    while (f.length > 1 && ctx.measureText(f).width > maxF) f = f.slice(0, -2) + "…";
+    ctx.fillText(f, P, H - P - 14*u);
+  }
+  ctx.fillStyle = accent; ctx.fillRect(0, H - 8*u, W, 8*u);
+
+  const top = P + mk + 50*u, bottom = H - P - (state.footer ? 74*u : 20*u);
+  const avail = bottom - top;
+  const hl = hasCode ? hlLines(state.code, state.lang) : null;
+  const label = state.file || (hl ? (LANG_LABEL[hl.detected] || hl.detected || "") : "");
+  const tagH = 46*u;
+  const drawTag = (x, y) => {
+    ctx.font = fontStr({weight: bold}, 22*u);
+    const tw = ctx.measureText(state.tag).width + 36*u;
+    ctx.fillStyle = rgba(accent, 0.16); rr(ctx, x, y, tw, tagH, tagH/2); ctx.fill();
+    ctx.fillStyle = accent; ctx.fillText(state.tag, x + 18*u, y + tagH/2 + 1*u);
+  };
+  lastCode = null;
+
+  if (wide && hasCode) {
+    const gap = 52*u, lw = (W - 2*P - gap) * 0.42, rx = P + lw + gap, rw = W - P - rx;
+    const TL = fitRich(ctx, state.title, lw, 54*u, 30*u, 4, {title: true});
+    const tagB = state.tag ? tagH + 22*u : 0;
+    const BL = fitRich(ctx, state.body, lw, 26*u, 18*u, 99, {}, avail - richH(TL) - tagB - 22*u);
+    const leftH = tagB + richH(TL) + (state.body ? 22*u + richH(BL) : 0);
+    let y = top + Math.max(0, (avail - leftH) / 2);
+    if (state.tag) { drawTag(P, y); y += tagB; }
+    drawRich(ctx, TL, P, y, t.fg, t.fg, accent); y += richH(TL) + 22*u;
+    if (state.body) drawRich(ctx, BL, P, y, t.muted, t.fg, accent);
+    const C = layoutCode(ctx, hl, rw, avail + 30*u, u);
+    drawCodeCard(ctx, C, rx, top - 15*u + Math.max(0, (avail + 30*u - C.h) / 2), rw, t, u, label);
+    lastCode = C; return;
+  }
+
+  const cw = W - 2*P;
+  if (!hasCode) {
+    const TL = fitRich(ctx, state.title, cw, (wide ? 64 : 92)*u, 40*u, wide ? 3 : 5, {title: true});
+    const BL = fitRich(ctx, state.body, cw * (wide ? 1 : 0.92), (wide ? 30 : 36)*u, 22*u, 99, {}, avail - richH(TL) - 140*u);
+    const gh = (state.tag ? tagH + 30*u : 0) + richH(TL) + (state.body ? 34*u + richH(BL) : 0);
+    let y = top + Math.max(0, (avail - gh) * 0.46);
+    if (state.tag) { drawTag(P, y); y += tagH + 30*u; }
+    drawRich(ctx, TL, P, y, t.fg, t.fg, accent); y += richH(TL);
+    if (state.body) drawRich(ctx, BL, P, y + 34*u, t.muted, t.fg, accent);
+    return;
+  }
+
+  const tagB = state.tag ? tagH + 24*u : 0;
+  const TL = fitRich(ctx, state.title, cw, 66*u, 40*u, 3, {title: true});
+  const BL = state.body ? fitRich(ctx, state.body, cw, 30*u, 22*u, 99, {}, avail * 0.3) : {lines: [], lh: 0};
+  const textH = tagB + richH(TL) + (state.body ? 22*u + richH(BL) : 0);
+  const codeGap = 42*u;
+  const C = layoutCode(ctx, hl, cw, Math.max(180*u, avail - textH - codeGap), u);
+  let y = top + Math.max(0, (avail - (textH + codeGap + C.h)) * 0.42);
+  if (state.tag) { drawTag(P, y); y += tagB; }
+  drawRich(ctx, TL, P, y, t.fg, t.fg, accent); y += richH(TL);
+  if (state.body) { y += 22*u; drawRich(ctx, BL, P, y, t.muted, t.fg, accent); y += richH(BL); }
+  drawCodeCard(ctx, C, P, y + codeGap, cw, t, u, label);
+  lastCode = C;
+}
+
+/* ---------- render loop ---------- */
+const poster = $("poster");
+let renderTimer;
+function schedule(){ clearTimeout(renderTimer); renderTimer = setTimeout(doRender, 60); }
+async function doRender(){
+  await ensureFonts();
+  renderPoster(poster);
+  const note = $("codeNote");
+  if (lastCode && (lastCode.truncated || lastCode.n > 22)) {
+    note.hidden = false;
+    note.textContent = lastCode.truncated
+      ? (state.size === "portrait" ? "কোডটা ছবিতে পুরোটা ধরছে না, শেষের অংশ কেটে গেছে। লাইন কমিয়ে দিন।" : "কোডটা ছবিতে পুরোটা ধরছে না, শেষের অংশ কেটে গেছে। লাইন কমান, অথবা মাপ পোর্ট্রেট করুন।")
+      : `কোডে ${bn(lastCode.n)} লাইন, ফোনে ছোট দেখাবে। ১৫ লাইনের মধ্যে রাখলে পড়তে সুবিধা।`;
+  } else note.hidden = true;
+}
+
+/* ---------- form ---------- */
+const F = {title: $("fTitle"), body: $("fBody"), code: $("fCode"), lang: $("fLang"), tag: $("fTag"), file: $("fFile")};
+LANGS.forEach(([v, l]) => { const o = document.createElement("option"); o.value = v; o.textContent = l; F.lang.append(o); });
+for (const k in F) F[k].addEventListener("input", () => { state[k] = F[k].value; schedule(); persist(); });
+F.code.addEventListener("keydown", e => {
+  if (e.key === "Tab" && !e.shiftKey && !e.ctrlKey && !e.metaKey) {
+    e.preventDefault(); const el = F.code;
+    el.setRangeText("  ", el.selectionStart, el.selectionEnd, "end"); el.dispatchEvent(new Event("input"));
+  }
+});
+
+const sizeBox = $("sizes");
+for (const [k, s] of Object.entries(SIZES)) {
+  const b = document.createElement("button"); b.type = "button"; b.setAttribute("role", "radio"); b.dataset.k = k;
+  b.append(s.label); const sm = document.createElement("small"); sm.textContent = s.ratio; b.append(sm);
+  b.addEventListener("click", () => { state.size = k; syncAll(); schedule(); persist(); });
+  sizeBox.append(b);
+}
+const themeBox = $("themes");
+for (const [k, th] of Object.entries(THEMES)) {
+  const b = document.createElement("button"); b.type = "button"; b.className = "dot"; b.setAttribute("role", "radio");
+  b.dataset.k = k; b.title = th.name; b.setAttribute("aria-label", th.name);
+  b.style.background = `linear-gradient(135deg, ${th.bg1}, ${th.bg2})`; b.style.setProperty("--a", th.accent);
+  b.addEventListener("click", () => { state.theme = k; state.accent = null; syncAll(); schedule(); persist(); });
+  themeBox.append(b);
+}
+const dFontBn = $("dFontBn");
+for (const [k, v] of Object.entries(BN_FONTS)) { const o = document.createElement("option"); o.value = k; o.textContent = v.label; dFontBn.append(o); }
+const dFontCode = $("dFontCode");
+CODE_FONTS.forEach(k => { const o = document.createElement("option"); o.value = k; o.textContent = k; dFontCode.append(o); });
+const D = {fontBn: dFontBn, fontCode: dFontCode, handle: $("dHandle"), footer: $("dFooter")};
+for (const k in D) D[k].addEventListener("input", () => { state[k] = D[k].value; schedule(); persist(); });
+const T = {showLineNo: $("tLine"), showChrome: $("tChrome")};
+for (const k in T) T[k].addEventListener("change", () => { state[k] = T[k].checked; schedule(); persist(); });
+$("dCodeSize").addEventListener("input", e => { state.codeSize = +e.target.value; syncAll(); schedule(); persist(); });
+$("dAccent").addEventListener("input", e => { state.accent = e.target.value; schedule(); persist(); });
+$("dAccentReset").addEventListener("click", () => { state.accent = null; syncAll(); schedule(); persist(); });
+
+function syncAll(){
+  for (const k in F) F[k].value = state[k] || (k === "lang" ? "auto" : "");
+  for (const k in D) D[k].value = state[k] ?? "";
+  for (const k in T) T[k].checked = !!state[k];
+  sizeBox.querySelectorAll("button").forEach(b => b.setAttribute("aria-checked", b.dataset.k === state.size ? "true" : "false"));
+  themeBox.querySelectorAll(".dot").forEach(b => b.setAttribute("aria-checked", b.dataset.k === state.theme ? "true" : "false"));
+  $("dAccent").value = state.accent || THEMES[state.theme].accent;
+  $("dCodeSize").value = state.codeSize || 0;
+  $("dCodeSizeVal").textContent = state.codeSize ? bn(state.codeSize) : "নিজে থেকে";
+}
+
+/* ---------- earlier posters ---------- */
+const fmtDate = ts => { try { return new Date(ts).toLocaleDateString("bn-BD", {day: "numeric", month: "long"}); } catch { return ""; } };
+function armed(btn, label, fn){
+  btn.addEventListener("click", () => {
+    if (btn.dataset.arm === "1") { clearTimeout(btn._t); fn(); return; }
+    btn.dataset.arm = "1"; const old = btn.textContent; btn.textContent = label; btn.classList.add("arm");
+    btn._t = setTimeout(() => { btn.dataset.arm = ""; btn.textContent = old; btn.classList.remove("arm"); }, 3000);
+  });
+}
+function renderLib(){
+  const box = $("libList"); box.textContent = "";
+  library.forEach(p => {
+    const row = document.createElement("div"); row.className = "libitem"; row.setAttribute("aria-current", p.id === state.id ? "true" : "false");
+    const tx = document.createElement("div"); tx.className = "t";
+    const b = document.createElement("b"); b.textContent = p.title || "শিরোনাম নেই";
+    const sm = document.createElement("small"); sm.textContent = (p.id === state.id ? "খোলা আছে · " : "") + fmtDate(p.updated);
+    tx.append(b, sm); row.append(tx);
+    if (p.id !== state.id) {
+      const o = document.createElement("button"); o.className = "ib"; o.type = "button"; o.textContent = "খুলুন";
+      o.addEventListener("click", () => loadPost(p.id));
+      const d = document.createElement("button"); d.className = "ib warn"; d.type = "button"; d.textContent = "মুছুন";
+      armed(d, "নিশ্চিত?", () => { library = library.filter(x => x.id !== p.id); store.set("kodpot.posters", library); renderLib(); toast("পোস্টার মুছে ফেলা হয়েছে"); });
+      row.append(o, d);
+    }
+    box.append(row);
+  });
+}
+$("libBox").addEventListener("toggle", () => { if ($("libBox").open) renderLib(); });
+function loadPost(id){
+  clearTimeout(saveTimer); commit();
+  const p = library.find(x => x.id === id); if (!p) return;
+  state = clone(p); store.set("kodpot.currentPoster", id);
+  syncAll(); schedule(); renderLib(); toast("পোস্টার খোলা হয়েছে");
+}
+$("libNew").addEventListener("click", () => {
+  clearTimeout(saveTimer); commit();
+  const p = {id: uid(), updated: Date.now(), tag: "", title: "পোস্টের শিরোনাম লিখুন", body: "এখানে ছোট করে ব্যাখ্যা লিখুন।", code: "// এখানে আপনার কোড পেস্ট করুন", lang: "auto", file: ""};
+  DESIGN_KEYS.forEach(k => p[k] = state[k]);
+  state = p; commit(); syncAll(); schedule();
+  F.title.focus(); F.title.select();
+  toast("নতুন পোস্টার শুরু হলো, ডিজাইন আগেরটার মতো রাখা হয়েছে");
+});
+
+/* ---------- save / copy ---------- */
+let toastT;
+function toast(msg){ const el = $("toast"); el.textContent = msg; el.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => el.hidden = true, 3200); }
+let downloadsP = null;
+const getDownloads = () => downloadsP || (downloadsP = (async () => { try { return window.claude && window.claude.use ? await window.claude.use("downloads") : null; } catch { return null; } })());
+getDownloads();
+const fileName = () => "msilabs-" + ((state.title || "poster").trim().replace(/[\\/:*?"<>|`(){}\[\]]+/g, "").replace(/\s+/g, "-").slice(0, 40) || "poster") + ".png";
+const toBlob = c => new Promise(r => c.toBlob(r, "image/png"));
+function freshCanvas(){ const c = document.createElement("canvas"); renderPoster(c); return c; }
+function showFallback(c){ $("modalImg").src = c.toDataURL("image/png"); $("modal").hidden = false; $("modalClose").focus(); }
+
+$("btnSave").addEventListener("click", async () => {
+  const btn = $("btnSave"); if (btn.disabled) return; btn.disabled = true;
+  try {
+    await ensureFonts();
+    const c = freshCanvas(), name = fileName();
+    const dl = await getDownloads();
+    if (!dl) { showFallback(c); return; }
+    try { await dl.save({filename: name, data: await toBlob(c)}); toast("ছবি সেভ হয়েছে"); }
+    catch (e) {
+      const code = e && e.code;
+      if (code === "declined") toast("সেভ বাতিল করা হয়েছে");
+      else if (code === "rate_limited") toast("আগের সেভের জানালা এখনো খোলা, একটু পরে আবার চাপুন");
+      else showFallback(c);
+    }
+  } catch (e) { console.error(e); toast("ছবি বানাতে সমস্যা হলো, আবার চেষ্টা করুন"); }
+  finally { btn.disabled = false; }
+});
+$("btnCopy").addEventListener("click", () => {
+  const fail = () => toast("এখানে ছবি কপি করা যাচ্ছে না, “ছবি সেভ করুন” ব্যবহার করুন");
+  try {
+    if (!navigator.clipboard || !window.ClipboardItem) return fail();
+    navigator.clipboard.write([new ClipboardItem({"image/png": toBlob(freshCanvas())})])
+      .then(() => toast("ছবি কপি হয়েছে, পোস্টে পেস্ট করুন")).catch(fail);
+  } catch { fail(); }
+});
+$("modalClose").addEventListener("click", () => $("modal").hidden = true);
+$("modal").addEventListener("click", e => { if (e.target === $("modal")) $("modal").hidden = true; });
+document.addEventListener("keydown", e => { if (e.key === "Escape") $("modal").hidden = true; });
+
+/* ---------- boot ---------- */
+syncAll(); doRender();
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { fontsKey = ""; schedule(); });
+})();
+</script>
